@@ -14,45 +14,48 @@ namespace Server
 {
     class Server
     {
-        protected static int origRow;
-        protected static int origCol;
 
         protected static int inputRow = 25;
         protected static int inputCol = 7;
 
-        private List<Chatroom> rooms;
-        private List<User> users;
+        private ConcurrentBag<Chatroom> chatrooms;
+        private ConcurrentBag<User> users;
+
         private ConcurrentDictionary<User, TcpClient> userConnections;
-        
+        private ConcurrentDictionary<User, Chatroom> usersChatRoom;
+        private Chatroom defaultChatroom;
 
         public Server()
         {
-            rooms= new List<Chatroom>();
-            
-            
-
-            origRow = Console.CursorTop;
-            origCol = Console.CursorLeft;
-            Console.CursorTop = inputRow;
-            Console.CursorLeft = inputCol;
+            chatrooms = new ConcurrentBag<Chatroom>();
+            defaultChatroom = new Chatroom("Room 1");
+            chatrooms.Add(defaultChatroom);
 
         }
 
-        public async void Start()
+        public void Start()
         {
             var listener = new TcpListener(IPAddress.Any, 9001);
             var token = new CancellationToken();
-            
+
+            var serverip = Dns.GetHostEntry(Dns.GetHostName())
+    .AddressList.First(o => o.AddressFamily == AddressFamily.InterNetwork)
+    .ToString();
+
+            Console.WriteLine("Chat server IP: {0}", serverip);
+            listener.Start();
+            Console.WriteLine("READY! Now listening.");
             while (!token.IsCancellationRequested)
             {
-                TcpClient client = await listener.AcceptTcpClientAsync();
+                TcpClient client = listener.AcceptTcpClient();
 
-                Thread thread = new Thread(() => handleClient(client, token));
+                Thread thread = new Thread(() => HandleClient(client, token));
                 thread.Start();
             }
+            Console.WriteLine("");
         }
 
-        public async void handleClient(TcpClient obj, CancellationToken token)
+        public async void HandleClient(TcpClient obj, CancellationToken token)
         {
             var client = obj as TcpClient;
             bool keepReading = true;
@@ -78,8 +81,18 @@ namespace Server
 
                     if (json == null)
                         continue;
+
+                    switch (json["CMD"].ToString())
+                    {
+                        case "identity":
+                            handleIdentity(json, client);
+                            break;
+                        case "requestinfo":
+                            HandleFreedomOfInformationRequest(json, client);
+                            break;
+                    }
                 }
-                else // client (probably disconnected.
+                else // client (probably) disconnected.
                     keepReading = false;
 
             }
@@ -88,20 +101,49 @@ namespace Server
 
         }
 
-        protected static void WriteAt(string s, int x, int y)
+        private void send(User u, string s)
         {
-            try
+            TcpClient client;
+            userConnections.TryGetValue(u, out client);
+            if(client == null)
+                throw new InvalidOperationException("User not found in the userConnection dictionary.");
+            send(client, s);
+        }
+
+        private void send(TcpClient client, string s)
+        {
+            byte[] data = Packet.CreateByteData(s);
+
+            //no await. Fire and forget
+            client.GetStream().WriteAsync(data ,0, data.Length);
+        }
+
+        private void handleIdentity(JObject json, TcpClient client)
+        {
+            User newUser = new User()
             {
-                Console.SetCursorPosition(origCol + x, origRow + y);
-                Console.Write(s);
-            }
-            catch (ArgumentOutOfRangeException e)
+                Name = json["Name"].ToString()
+            };
+
+            users.Add(newUser);
+            userConnections.AddOrUpdate(newUser, client, (u, c) => c);
+            usersChatRoom.AddOrUpdate(newUser, defaultChatroom, (u, c) => c);
+        }
+
+        private void HandleFreedomOfInformationRequest(JObject j, TcpClient c)
+        {
+            switch (j["type"].ToString().ToLower())
             {
-                Console.Clear();
-                Console.WriteLine(e.Message);
+                case "chatrooms":
+                    lock (chatroomsLock)
+                    {
+                        JArray allRooms = JArray.FromObject(chatrooms);
+                        send(c, new JObject(new JProperty("CMD", "requestinforesponse"),
+                                    new JProperty("Type", "chatrooms"),
+                                    new JProperty("Data", allRooms)).ToString());
+                    }
+                    break;
             }
-            Console.CursorTop = inputRow;
-            Console.CursorLeft = inputCol;
         }
 
 

@@ -12,5 +12,10 @@ namespace NetworkLibrary
         public string Name { get; set; }
         public Dictionary<User, string> Messages { get; set; }
         public List<User> users { get; set; }
+
+        public Chatroom(string name)
+        {
+            Name = name;
+        }
     }
 }

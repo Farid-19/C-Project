@@ -12,7 +12,9 @@ namespace Server
         static void Main(string[] args)
         {
             Server s = new Server();
-            
+            s.Start();
+
+            Console.WriteLine("Stopped the server.");
         }
 
        
