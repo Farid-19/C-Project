@@ -21,7 +21,7 @@ namespace Server
         private ConcurrentBag<Chatroom> chatrooms;
         private ConcurrentBag<User> users;
 
-        private ConcurrentDictionary<User, TcpClient> userConnections;
+      //  private ConcurrentDictionary<User, TcpClient> userConnections;
         private ConcurrentDictionary<User, Chatroom> usersChatRoom;
         private Chatroom defaultChatroom;
 
@@ -29,9 +29,12 @@ namespace Server
         {
             chatrooms = new ConcurrentBag<Chatroom>();
             users = new ConcurrentBag<NetworkLibrary.User>();
+            
             usersChatRoom = new ConcurrentDictionary<NetworkLibrary.User, NetworkLibrary.Chatroom>();
-            defaultChatroom = new Chatroom("Room 1");
+            defaultChatroom = new Chatroom("QueueAge");
+            Chatroom c1 = new Chatroom("Swag");
             chatrooms.Add(defaultChatroom);
+            chatrooms.Add(c1);
 
         }
 
@@ -106,10 +109,10 @@ namespace Server
         private void send(User u, string s)
         {
             TcpClient client;
-            userConnections.TryGetValue(u, out client);
-            if(client == null)
-                throw new InvalidOperationException("User not found in the userConnection dictionary.");
-            send(client, s);
+            //userConnections.TryGetValue(u, out client);
+           // if(client == null)
+             //   throw new InvalidOperationException("User not found in the userConnection dictionary.");
+            //send(client, s);
         }
 
         private void send(TcpClient client, string s)
@@ -129,20 +132,20 @@ namespace Server
             };
 
             users.Add(newUser);
-            userConnections.AddOrUpdate(newUser, client, (u, c) => c);
+            //userConnections.AddOrUpdate(newUser, client, (u, c) => c);
             usersChatRoom.AddOrUpdate(newUser, defaultChatroom, (u, c) => c);
         }
 
         private void HandleFreedomOfInformationRequest(JObject j, TcpClient c)
         {
-            switch (j["type"].ToString().ToLower())
+            switch (j["Type"].ToString().ToLower())
             {
                 case "chatrooms":
-                    JArray allRooms = JArray.FromObject(chatrooms);
-                    send(c, new JObject(new JProperty("CMD", "requestinforesponse"),
+                    JArray allRooms = JArray.FromObject(chatrooms.ToList());
+                    JObject json = new JObject(new JProperty("CMD", "requestinforesponse"),
                         new JProperty("Type", "chatrooms"),
-                        new JProperty("Data", allRooms)).ToString());
-                    send(c, allRooms.ToString());
+                        new JProperty("Data", allRooms));
+                    send(c, json.ToString());
                         break;
             }
         }

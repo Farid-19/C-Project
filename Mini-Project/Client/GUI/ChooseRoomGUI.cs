@@ -10,16 +10,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Client;
-
+using Newtonsoft.Json.Linq;
+using NetworkLibrary;
 
 namespace Client.GUI
 {
 
     public partial class ChooseRoomGUI : Form
     {
-       Client client = new Client();
+        Client client;
 
-        public ChooseRoomGUI(String username)
+        public ChooseRoomGUI(String username, Client c)
         {
             InitializeComponent();
             _welcomeLabel.Text = "Welcome " + username + " !";
@@ -28,6 +29,10 @@ namespace Client.GUI
             {
                 _connectButton.Enabled = false;
             }
+            client = c;
+
+            client.requestRooms();
+            client.OnReceivedJSON += UpdateJSON;
         }
 
         
@@ -60,6 +65,16 @@ namespace Client.GUI
             
             ChatRoomGUI chatGUI = new ChatRoomGUI();
             chatGUI.Show();
+        }
+
+        public void UpdateJSON(JObject j)
+        {
+            client.OnReceivedJSON -= UpdateJSON;
+            foreach(JToken token in j["Data"])
+            {
+                Chatroom chatroom = token.ToObject<Chatroom>();
+                _roomListBox.BeginInvoke((Action)(() => { _roomListBox.Items.Add(chatroom); }));
+            }
         }
     }
 }

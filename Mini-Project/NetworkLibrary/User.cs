@@ -16,8 +16,8 @@ namespace NetworkLibrary
     {
         public string Name { get; set; }
 
-        [NonSerialized] private TcpClient client;
-        public bool isConnected { get { if (client == null) return false; else return client.Connected}}
+        [NonSerialized] public TcpClient client;
+        public bool isConnected { get { if (client == null) return false; else return client.Connected; } }
 
         public User()
         {

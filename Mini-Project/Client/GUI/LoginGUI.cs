@@ -48,7 +48,7 @@ namespace Client.GUI
 
                 this.Hide();
 
-                ChooseRoomGUI chooseGUI = new ChooseRoomGUI(_usernameBox.Text);
+                ChooseRoomGUI chooseGUI = new ChooseRoomGUI(_usernameBox.Text, client);
                 chooseGUI.Show();
             }
         }

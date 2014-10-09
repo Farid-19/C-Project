@@ -20,6 +20,8 @@ namespace NetworkLibrary
         public Chatroom(string name)
         {
             Name = name;
+            Messages = new Dictionary<User, string>();
+            users = new List<User>();
         }
 
         public void AddUser(User u)
@@ -41,6 +43,11 @@ namespace NetworkLibrary
             {
                 u.send(json.ToString());
             }
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }
