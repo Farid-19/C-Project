@@ -58,8 +58,9 @@
             this._connectButton.TabIndex = 2;
             this._connectButton.Text = "Connect";
             this._connectButton.UseVisualStyleBackColor = true;
+            this._connectButton.Click += new System.EventHandler(this._connectButton_Click);
             // 
-            // ConnectGUI
+            // LoginGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -67,7 +68,7 @@
             this.Controls.Add(this._connectButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this._usernameBox);
-            this.Name = "ConnectGUI";
+            this.Name = "LoginGUI";
             this.Text = "Connect";
             this.ResumeLayout(false);
             this.PerformLayout();
