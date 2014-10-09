@@ -10,6 +10,11 @@ namespace NetworkLibrary
     public class User
     {
         public string Name { get; set; }
-        public User() { }
+
+
+        public User(string name)
+        {
+            Name = name;
+        }
     }
 }

@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace Client.GUI
 {
 
     public partial class ChooseRoomGUI : Form
     {
+        Client client = new Client();
+
         public ChooseRoomGUI(String username)
         {
-
             InitializeComponent();
             _welcomeLabel.Text = "Welcome " + username + " !";
 
@@ -23,7 +27,14 @@ namespace Client.GUI
             {
                 _connectButton.Enabled = false;
             }
+
+            client.connectToServer();
+            client.loadRooms();
         }
+
+        
+
+       
 
         private void _roomListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
