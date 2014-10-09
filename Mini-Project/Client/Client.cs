@@ -49,9 +49,10 @@ namespace Client
 
         public void read()
         {
+            List<byte> allTheBytes = new List<byte>();
             while (true)
             {
-                List<byte> allTheBytes = new List<byte>();
+                
 
                 byte[] buffer = new byte[512];
                 int received = client.GetStream().Read(buffer, 0, buffer.Length);

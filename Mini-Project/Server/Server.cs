@@ -15,15 +15,11 @@ namespace Server
     class Server
     {
 
-        protected static int inputRow = 25;
-        protected static int inputCol = 7;
-
         private ConcurrentBag<Chatroom> chatrooms;
         private ConcurrentBag<User> users;
 
-      //  private ConcurrentDictionary<User, TcpClient> userConnections;
         private ConcurrentDictionary<User, Chatroom> usersChatRoom;
-        private Chatroom defaultChatroom;
+        private readonly Chatroom defaultChatroom;
 
         public Server()
         {
@@ -31,10 +27,15 @@ namespace Server
             users = new ConcurrentBag<NetworkLibrary.User>();
             
             usersChatRoom = new ConcurrentDictionary<NetworkLibrary.User, NetworkLibrary.Chatroom>();
-            defaultChatroom = new Chatroom("QueueAge");
-            Chatroom c1 = new Chatroom("Swag");
+            defaultChatroom = new Chatroom("The Commissariat");
+            Chatroom c1 = new Chatroom("The White council");
+            Chatroom c2 = new Chatroom("League of Nations");
+            Chatroom c3 = new Chatroom("Ministerie van koloniën");
             chatrooms.Add(defaultChatroom);
             chatrooms.Add(c1);
+            chatrooms.Add(c2);
+            chatrooms.Add(c3);
+            AddNewUser(new User("Stalin", new TcpClient()));
 
         }
 
@@ -53,8 +54,10 @@ namespace Server
             while (!token.IsCancellationRequested)
             {
                 TcpClient client = listener.AcceptTcpClient();
+                Console.WriteLine(String.Format("A client with IP {0} connected", client.Client.RemoteEndPoint));
 
                 Thread thread = new Thread(() => HandleClient(client, token));
+                
                 thread.Start();
             }
             Console.WriteLine("");
@@ -131,9 +134,7 @@ namespace Server
                 client = client
             };
 
-            users.Add(newUser);
-            //userConnections.AddOrUpdate(newUser, client, (u, c) => c);
-            usersChatRoom.AddOrUpdate(newUser, defaultChatroom, (u, c) => c);
+            AddNewUser(newUser);
         }
 
         private void HandleFreedomOfInformationRequest(JObject j, TcpClient c)
@@ -148,6 +149,13 @@ namespace Server
                     send(c, json.ToString());
                         break;
             }
+        }
+
+        private void AddNewUser(User u)
+        {
+            users.Add(u);
+            usersChatRoom.AddOrUpdate(u, defaultChatroom, (z, c) => c);
+            defaultChatroom.AddUser(u);
         }
 
 

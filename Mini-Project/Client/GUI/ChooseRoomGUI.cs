@@ -73,7 +73,7 @@ namespace Client.GUI
             foreach(JToken token in j["Data"])
             {
                 Chatroom chatroom = token.ToObject<Chatroom>();
-                _roomListBox.BeginInvoke((Action)(() => { _roomListBox.Items.Add(chatroom); }));
+                _roomListBox.BeginInvoke((Action)(() => _roomListBox.Items.Add(chatroom)));
             }
         }
     }

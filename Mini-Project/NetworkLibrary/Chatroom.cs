@@ -34,11 +34,21 @@ namespace NetworkLibrary
             users.Remove(u);
         }
 
-        public void BroadCast(string message, string user, ConcurrentDictionary<User, TcpClient> userClients)
+        public void BroadCast(string message, string user)
         {
-            JObject json = new JObject(new JProperty("CMD", "newchatmessage"), 
-                new JProperty("Message", message),
-                new JProperty("User", user));
+            BroadCast(message, user, users.Where(x => x.isConnected).ToList());
+        }
+
+        public void BroadCast(string message, string user, User excludeUser)
+        {
+            BroadCast(message, user, users.Where(x => x.isConnected && x != excludeUser).ToList());
+        }
+
+        private void BroadCast(string message, string user, List<User> users)
+        {
+            JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
+            new JProperty("Message", message),
+            new JProperty("User", user));
             foreach (User u in users)
             {
                 u.send(json.ToString());
@@ -47,7 +57,7 @@ namespace NetworkLibrary
 
         public override string ToString()
         {
-            return Name;
+            return String.Format("{0} - {1} Users", Name, users.Count);
         }
     }
 }
