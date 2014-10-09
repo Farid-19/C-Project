@@ -11,6 +11,10 @@ namespace NetworkLibrary
     {
         public string Name { get; set; }
 
+        public User()
+        {
+            
+        }
 
         public User(string name)
         {

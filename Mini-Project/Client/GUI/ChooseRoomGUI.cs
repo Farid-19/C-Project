@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Client;
 
 
 namespace Client.GUI
@@ -16,7 +17,7 @@ namespace Client.GUI
 
     public partial class ChooseRoomGUI : Form
     {
-        Client client = new Client();
+       Client client = new Client();
 
         public ChooseRoomGUI(String username)
         {
@@ -27,9 +28,6 @@ namespace Client.GUI
             {
                 _connectButton.Enabled = false;
             }
-
-            client.connectToServer();
-            client.loadRooms();
         }
 
         

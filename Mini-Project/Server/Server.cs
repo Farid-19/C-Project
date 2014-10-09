@@ -28,6 +28,9 @@ namespace Server
         public Server()
         {
             chatrooms = new ConcurrentBag<Chatroom>();
+            users = new ConcurrentBag<NetworkLibrary.User>();
+            userConnections = new ConcurrentDictionary<NetworkLibrary.User, TcpClient>();
+            usersChatRoom = new ConcurrentDictionary<NetworkLibrary.User, NetworkLibrary.Chatroom>();
             defaultChatroom = new Chatroom("Room 1");
             chatrooms.Add(defaultChatroom);
 
@@ -135,14 +138,11 @@ namespace Server
             switch (j["type"].ToString().ToLower())
             {
                 case "chatrooms":
-                    lock (chatroomsLock)
-                    {
-                        JArray allRooms = JArray.FromObject(chatrooms);
-                        send(c, new JObject(new JProperty("CMD", "requestinforesponse"),
-                                    new JProperty("Type", "chatrooms"),
-                                    new JProperty("Data", allRooms)).ToString());
-                    }
-                    break;
+                    JArray allRooms = JArray.FromObject(chatrooms);
+                    send(c, new JObject(new JProperty("CMD", "requestinforesponse"),
+                        new JProperty("Type", "chatrooms"),
+                        new JProperty("Data", allRooms)).ToString());
+                        break;
             }
         }
 

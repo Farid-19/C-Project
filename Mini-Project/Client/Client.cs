@@ -15,14 +15,14 @@ namespace Client
 
         public Client()
         {
+            client = new TcpClient();
             
         }
 
 
-        public void connectToServer()
+        public void connectToServer(String ip)
         {
-            client = new TcpClient();
-            client.Connect("127.0.0.1", 9001);
+            client.Connect(ip, 9001);
         }
 
         public void loadRooms()
@@ -36,6 +36,11 @@ namespace Client
 
             Packet.CreateByteData(json);
             
+        }
+
+        public void Send(byte[] data)
+        {
+            client.GetStream().WriteAsync(data, 0, data.Length);            
         }
     }
 }
