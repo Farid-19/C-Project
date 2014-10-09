@@ -44,6 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI\ChatRoomGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ChatRoomGUI.Designer.cs">
+      <DependentUpon>ChatRoomGUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ChooseRoomGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ChooseRoomGUI.Designer.cs">
+      <DependentUpon>ChooseRoomGUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\LoginGUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -52,6 +64,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI\ChatRoomGUI.resx">
+      <DependentUpon>ChatRoomGUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ChooseRoomGUI.resx">
+      <DependentUpon>ChooseRoomGUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\LoginGUI.resx">
       <DependentUpon>LoginGUI.cs</DependentUpon>
     </EmbeddedResource>
