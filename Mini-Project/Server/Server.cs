@@ -29,7 +29,6 @@ namespace Server
         {
             chatrooms = new ConcurrentBag<Chatroom>();
             users = new ConcurrentBag<NetworkLibrary.User>();
-            userConnections = new ConcurrentDictionary<NetworkLibrary.User, TcpClient>();
             usersChatRoom = new ConcurrentDictionary<NetworkLibrary.User, NetworkLibrary.Chatroom>();
             defaultChatroom = new Chatroom("Room 1");
             chatrooms.Add(defaultChatroom);
@@ -125,7 +124,8 @@ namespace Server
         {
             User newUser = new User()
             {
-                Name = json["Name"].ToString()
+                Name = json["Name"].ToString(),
+                client = client
             };
 
             users.Add(newUser);
@@ -142,6 +142,7 @@ namespace Server
                     send(c, new JObject(new JProperty("CMD", "requestinforesponse"),
                         new JProperty("Type", "chatrooms"),
                         new JProperty("Data", allRooms)).ToString());
+                    send(c, allRooms.ToString());
                         break;
             }
         }
