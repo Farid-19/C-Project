@@ -31,10 +31,14 @@ namespace Server
             Chatroom c1 = new Chatroom("The White council");
             Chatroom c2 = new Chatroom("League of Nations");
             Chatroom c3 = new Chatroom("Ministerie van koloniën");
+            Chatroom c4 = new Chatroom("QueueAge");
+            Chatroom c5 = new Chatroom("De Gemeentehuis");
             chatrooms.Add(defaultChatroom);
             chatrooms.Add(c1);
             chatrooms.Add(c2);
             chatrooms.Add(c3);
+            chatrooms.Add(c4);
+            chatrooms.Add(c5);
             AddNewUser(new User("Stalin", new TcpClient()));
 
         }
@@ -44,9 +48,7 @@ namespace Server
             var listener = new TcpListener(IPAddress.Any, 9001);
             var token = new CancellationToken();
 
-            var serverip = Dns.GetHostEntry(Dns.GetHostName())
-    .AddressList.First(o => o.AddressFamily == AddressFamily.InterNetwork)
-    .ToString();
+            var serverip = Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(o => o.AddressFamily == AddressFamily.InterNetwork).ToString();
 
             Console.WriteLine("Chat server IP: {0}", serverip);
             listener.Start();
@@ -98,6 +100,9 @@ namespace Server
                         case "requestinfo":
                             HandleFreedomOfInformationRequest(json, client);
                             break;
+                        case "changeRoom":
+                            HandleChangeRoom(json, client);
+                            break;
                     }
                 }
                 else // client (probably) disconnected.
@@ -137,6 +142,11 @@ namespace Server
             AddNewUser(newUser);
         }
 
+        private void HandleChangeRoom(JObject json, TcpClient client)
+        {
+            //
+        }
+
         private void HandleFreedomOfInformationRequest(JObject j, TcpClient c)
         {
             switch (j["Type"].ToString().ToLower())
@@ -148,6 +158,13 @@ namespace Server
                         new JProperty("Data", allRooms));
                     send(c, json.ToString());
                         break;
+                case "users":
+                     JArray allUsers = JArray.FromObject(users.ToList());
+                     JObject json2 = new JObject(new JProperty("CMD", "requestinforesponse"),
+                         new JProperty("Type", "users"),
+                         new JProperty("Data", allUsers));
+                     send(c, json2.ToString());
+                     break;
             }
         }
 
