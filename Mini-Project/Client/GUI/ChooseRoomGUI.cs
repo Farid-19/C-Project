@@ -62,9 +62,20 @@ namespace Client.GUI
 
         private void _connectButton_Click(object sender, EventArgs e)
         {
-            
+            JObject changeRoomPacket = new JObject(
+                new JProperty("CMD", "changeRoom"),
+                new JProperty("Room", _roomListBox.SelectedIndex.ToString()));
+
+
+            var json = changeRoomPacket.ToString();
+
+            byte[] data = Packet.CreateByteData(json);
+            client.Send(data);
+
+
             ChatRoomGUI chatGUI = new ChatRoomGUI();
             chatGUI.Show();
+
         }
 
         public void UpdateJSON(JObject j)
@@ -78,6 +89,7 @@ namespace Client.GUI
             {
                 Chatroom chatroom = token.ToObject<Chatroom>();
                 _roomListBox.BeginInvoke((Action)(() => _roomListBox.Items.Add(chatroom)));
+                
             }
         }
     }

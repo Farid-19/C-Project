@@ -47,6 +47,18 @@ namespace Client
             
         }
 
+        public void requestUsers()
+        {
+            JObject usersPacket = new JObject(
+                    new JProperty("CMD", "requestinfo"),
+                    new JProperty("Type", "users"));
+
+            var json = usersPacket.ToString();
+
+            byte[] data = Packet.CreateByteData(json);
+            this.Send(data);
+        }
+
         public void read()
         {
             List<byte> allTheBytes = new List<byte>();
