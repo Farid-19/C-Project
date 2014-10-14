@@ -98,6 +98,9 @@ namespace Server
                         case "requestinfo":
                             HandleFreedomOfInformationRequest(json, client);
                             break;
+                        case "newchatmessage":
+                            handleNewchatmessage(json);
+                            break;
                     }
                 }
                 else // client (probably) disconnected.
@@ -116,6 +119,22 @@ namespace Server
            // if(client == null)
              //   throw new InvalidOperationException("User not found in the userConnection dictionary.");
             //send(client, s);
+        }
+
+        private void handleNewchatmessage(JObject json)
+        {
+            string message = json["Message"].ToString();
+            User user = users.First(x => x.Name == json["User"].ToString());
+            Chatroom room;
+            usersChatRoom.TryGetValue(user, out room);
+            if (room != null) room.sendUserMessage(message, user);
+            //room.sendUserMessage(message, user);
+        }
+
+        private void broadcast(string message, string user)
+        {
+            foreach(Chatroom room in chatrooms)
+                room.BroadCast(message, user);
         }
 
         private void send(TcpClient client, string s)
@@ -154,8 +173,8 @@ namespace Server
         private void AddNewUser(User u)
         {
             users.Add(u);
-            usersChatRoom.AddOrUpdate(u, defaultChatroom, (z, c) => c);
-            defaultChatroom.AddUser(u);
+            //usersChatRoom.AddOrUpdate(u, defaultChatroom, (z, c) => c);
+            //defaultChatroom.AddUser(u);
         }
 
 

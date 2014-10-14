@@ -69,6 +69,10 @@ namespace Client.GUI
 
         public void UpdateJSON(JObject j)
         {
+            if (j["CMD"].ToString() != "requestinforesponse" ||
+                j["Type"].ToString() != "chatrooms")
+                return;
+
             client.OnReceivedJSON -= UpdateJSON;
             foreach(JToken token in j["Data"])
             {
