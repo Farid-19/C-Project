@@ -51,11 +51,18 @@ namespace NetworkLibrary
             BroadCast(message, sender, users.Where(x => x.isConnected).ToList());
         }
 
+
         public void sendUserMessage(string message,User sender)
         {
             BroadCast(message, sender.Name, users.Where(x => x.isConnected && x != sender).ToList());
         }
 
+        /// <summary>
+        /// Sends a chatmessage to all users/clients in an given collection.
+        /// </summary>
+        /// <param name="message">Message to send</param>
+        /// <param name="user">Name of the user to use for the message</param>
+        /// <param name="users">Collection of users to send the message to</param>
         private void BroadCast(string message, string user, IEnumerable<User> users)
         {
             JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
@@ -69,6 +76,10 @@ namespace NetworkLibrary
             usersLock.ReleaseReaderLock();
         }
 
+        /// <summary>
+        /// Sends a chatmessage to all users/clients in the chatroom.
+        /// </summary>
+        /// <param name="message"></param>
         private void BroadCast(string message)
         {
             JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
@@ -91,38 +102,35 @@ namespace NetworkLibrary
         }
 
 
-        public void OnUsersListChanged(object obj, NotifyCollectionChangedEventArgs argsChangedAction)
+        /// <summary>
+        ///  Notifies existing clients/users if a user leaves or joins this chatroom.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="argsChangedAction"></param>
+        private void OnUsersListChanged(object obj, NotifyCollectionChangedEventArgs argsChangedAction)
         {
-
-            //if (users.Count < 2)
-            //    return;
-            String message;
-
-            
-            switch (argsChangedAction.Action)
+            foreach (User existingUser in users.Where(x => x.isConnected))
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (User newUser in argsChangedAction.NewItems)
-                    {
-                        message = String.Format("{0} has joined the conversation..", newUser.Name);
-                        BroadCast(message);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (User newUser in argsChangedAction.NewItems)
-                    {
-                        
-                        message = String.Format("{0} has left...", newUser.Name);
-                        BroadCast(message);
-                    }
-                    break;
-                default:
-                    return;
-                    break;
-            }
+                foreach (User newUser in argsChangedAction.NewItems)
+                {
+                    JObject json = new JObject(new JProperty("Name", newUser.Name));
 
-            
-            
+                    switch (argsChangedAction.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            json.Add(new JProperty("CMD", "userjoined"));
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
+                            json.Add(new JProperty("CMD", "userleft"));
+                            break;
+                        default:
+                            continue;
+                            break;
+                    }
+
+                    existingUser.send(json.ToString());
+                }
+            }
         }
     }
 }

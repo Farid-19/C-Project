@@ -168,23 +168,28 @@ namespace Server
 
         private void HandleFreedomOfInformationRequest(JObject j, TcpClient c)
         {
+            JObject json;
             switch (j["Type"].ToString().ToLower())
             {
                 case "chatrooms":
                     JArray allRooms = JArray.FromObject(chatrooms.ToList());
-                    JObject json = new JObject(new JProperty("CMD", "requestinforesponse"),
+                    json = new JObject(new JProperty("CMD", "requestinforesponse"),
                         new JProperty("Type", "chatrooms"),
                         new JProperty("Data", allRooms));
                     send(c, json.ToString());
                         break;
                 case "users":
                      JArray allUsers = JArray.FromObject(users.ToList());
-                     JObject json2 = new JObject(new JProperty("CMD", "requestinforesponse"),
+                     json  = new JObject(new JProperty("CMD", "requestinforesponse"),
                          new JProperty("Type", "users"),
                          new JProperty("Data", allUsers));
-                     send(c, json2.ToString());
                      break;
+
+                default:
+                    return;
             }
+            send(c, json.ToString());
+
         }
 
         private void AddNewUser(User u)
