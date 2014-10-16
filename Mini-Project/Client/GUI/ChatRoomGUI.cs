@@ -41,9 +41,9 @@ namespace Client.GUI
                 _userListBox.Items.Add(user);
             }
 
-            foreach (KeyValuePair<User, String> pair in room.Messages)
+            foreach (string message in room.Messages)
             {
-                addMessage(pair.Key.Name + ": " + pair.Value);
+                addMessage(message);
             }
         }
 

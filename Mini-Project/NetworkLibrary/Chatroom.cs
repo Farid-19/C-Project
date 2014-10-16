@@ -12,13 +12,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Utilities;
+using Newtonsoft.Json.Serialization;
 namespace NetworkLibrary
 {
     [Serializable]
     public class Chatroom
     {
         public string Name { get; set; }
-        public Dictionary<User, string> Messages { get; set; }
+        public List<String> Messages { get; set; }
         public ObservableCollection<User> users { get; set; }
         private readonly ReaderWriterLock usersLock = new ReaderWriterLock();
         private bool writeLog;
@@ -27,7 +30,7 @@ namespace NetworkLibrary
         {
             writeLog = writeMessagesToDisk;
             Name = name;
-            Messages = new Dictionary<User, string>();
+            Messages = new List<string>();
             users = new ObservableCollection<User>();
             users.CollectionChanged += OnUsersListChanged;
 
@@ -40,7 +43,7 @@ namespace NetworkLibrary
 
             if (writeLog)
                 WriteLog(mes);
-            Messages.Add(s, message);
+            Messages.Add(mes);
         }
 
         public void AddUser(User u)
@@ -77,7 +80,7 @@ namespace NetworkLibrary
         /// <param name="users">Collection of users to send the message to</param>
         private void BroadCast(string message, string user, IEnumerable<User> users)
         {
-            addMessage(users.First(x => x.Name == user), message);
+            addMessage(this.users.First(x => x.Name == user), message);
             JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
             new JProperty("Message", message),
             new JProperty("User", user));
@@ -117,15 +120,16 @@ namespace NetworkLibrary
         public void WriteLog(string leMessage)
         {
             string logFilePath = this.Name + @".txt";
-
-            using (FileStream file = new FileStream(logFilePath,FileMode.Append,FileAccess.Write,FileShare.None)) {
-                StreamWriter writer = new StreamWriter(file);
+            using (
+                System.IO.StreamWriter file = new System.IO.StreamWriter(logFilePath, true))
+            {
+                
                 DateTime n = DateTime.Now;
-                writer.Write("[" +  n.Day +":" + n.Month + ":" + n.Year + ":" + n.Second + ":" + n.Minute + "]" + leMessage);
-
-                file.Flush();
-                file.Close();
+                string message = "[" + n.Day + ":" + n.Month + ":" + n.Year + "][" + n.Hour + ":" + n.Minute + ":" + n.Second + "]" + " " +
+                                 leMessage;
+                file.WriteLine(message);
             }
+            
         }
 
         /// <summary>

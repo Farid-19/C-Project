@@ -29,12 +29,12 @@ namespace Server
             
             usersChatRoom = new ConcurrentDictionary<NetworkLibrary.User, NetworkLibrary.Chatroom>();
             clientUsers = new ConcurrentDictionary<TcpClient, User>();
-            Chatroom defaultChatroom = new Chatroom("The Commissariat");
-            Chatroom c1 = new Chatroom("The White council");
-            Chatroom c2 = new Chatroom("League of Nations");
+            Chatroom defaultChatroom = new Chatroom("The Commissariat",true);
+            Chatroom c1 = new Chatroom("The White council", true);
+            Chatroom c2 = new Chatroom("League of Nations",true);
             Chatroom c3 = new Chatroom("Ministerie van koloniën", true);
-            Chatroom c4 = new Chatroom("QueueAge");
-            Chatroom c5 = new Chatroom("De Gemeentehuis");
+            Chatroom c4 = new Chatroom("QueueAge",true);
+            Chatroom c5 = new Chatroom("Het Gemeentehuis",true);
             chatrooms.Add(defaultChatroom);
             chatrooms.Add(c1);
             chatrooms.Add(c2);
