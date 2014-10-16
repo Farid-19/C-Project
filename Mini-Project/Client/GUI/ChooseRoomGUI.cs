@@ -81,7 +81,7 @@ namespace Client.GUI
 
             room.AddUser(user);
 
-            ChatRoomGUI chatGUI = new ChatRoomGUI(room);
+            ChatRoomGUI chatGUI = new ChatRoomGUI(client, room, user);
             chatGUI.Text = room.Name;
             chatGUI.Show();
 

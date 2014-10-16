@@ -177,7 +177,6 @@ namespace Server
             Chatroom room;
             usersChatRoom.TryGetValue(user, out room);
             if (room != null) room.sendUserMessage(message, user);
-            //room.sendUserMessage(message, user);
         }
 
         private void broadcast(string message, string user)

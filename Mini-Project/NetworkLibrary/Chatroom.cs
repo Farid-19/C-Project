@@ -118,6 +118,8 @@ namespace NetworkLibrary
                     switch (argsChangedAction.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                            if(existingUser == newUser)
+                                continue;
                             json.Add(new JProperty("CMD", "userjoined"));
                             break;
                         case NotifyCollectionChangedAction.Remove:

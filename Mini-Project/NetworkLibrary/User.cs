@@ -24,6 +24,11 @@ namespace NetworkLibrary
                 
         }
 
+        public User(string name)
+        {
+            Name = name;
+        }
+
         public void send(string b)
         {
             byte[] data = Packet.CreateByteData(b);
@@ -34,6 +39,11 @@ namespace NetworkLibrary
         {
             this.client = client;
             Name = name;
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }
