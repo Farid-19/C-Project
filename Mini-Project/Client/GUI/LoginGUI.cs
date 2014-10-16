@@ -16,6 +16,7 @@ namespace Client.GUI
     public partial class LoginGUI : Form
     {
         private Client client;
+        private const int maxChar = 20;
 
         public LoginGUI()
         {
@@ -42,17 +43,26 @@ namespace Client.GUI
 
         public void login()
         {
-            client.connectToServer(_serverIPBox.Text);
+            if (_usernameBox.Text.Length > maxChar)
+            {
+                MessageBox.Show("Max characters is 20!");
+            }
+            else
+            {
+                client.connectToServer(_serverIPBox.Text);
 
-            JObject identityPacket = new JObject(
-                new JProperty("CMD", "identity"),
-                new JProperty("Name", _usernameBox.Text));
+                JObject identityPacket = new JObject(
+                    new JProperty("CMD", "identity"),
+                    new JProperty("Name", _usernameBox.Text));
 
 
-            var json = identityPacket.ToString();
+                var json = identityPacket.ToString();
 
-            byte[] data = Packet.CreateByteData(json);
-            client.Send(data);
+                byte[] data = Packet.CreateByteData(json);
+                client.Send(data);
+            }
+
+            
         }
     }
 }

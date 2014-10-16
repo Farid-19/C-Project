@@ -33,6 +33,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this._connectButton = new System.Windows.Forms.Button();
             this._disconnectButton = new System.Windows.Forms.Button();
+            this._updateButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _roomListBox
@@ -84,11 +85,22 @@
             this._disconnectButton.UseVisualStyleBackColor = true;
             this._disconnectButton.Click += new System.EventHandler(this._disconnectButton_Click);
             // 
+            // _updateButton
+            // 
+            this._updateButton.Location = new System.Drawing.Point(188, 295);
+            this._updateButton.Name = "_updateButton";
+            this._updateButton.Size = new System.Drawing.Size(115, 42);
+            this._updateButton.TabIndex = 8;
+            this._updateButton.Text = "Update";
+            this._updateButton.UseVisualStyleBackColor = true;
+            this._updateButton.Click += new System.EventHandler(this._updateButton_Click);
+            // 
             // ChooseRoomGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(500, 351);
+            this.Controls.Add(this._updateButton);
             this.Controls.Add(this._disconnectButton);
             this.Controls.Add(this._connectButton);
             this.Controls.Add(this.label1);
@@ -108,5 +120,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button _connectButton;
         private System.Windows.Forms.Button _disconnectButton;
+        private System.Windows.Forms.Button _updateButton;
     }
 }
