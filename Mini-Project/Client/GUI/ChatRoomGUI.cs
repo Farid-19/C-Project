@@ -100,6 +100,13 @@ namespace Client.GUI
                 return;
             }
 
+            JToken username;
+
+            if (!json.TryGetValue("Name", out username))
+                return;
+            if (!_userListBox.Items.Cast<User>().ToList().Exists(x => x.Name == username.ToString()))
+                return;
+
             switch (json["CMD"].ToString().ToLower())
             {
                 case "newchatmessage":
@@ -111,6 +118,8 @@ namespace Client.GUI
                     break;
                 case "userleft":
                     List<User> a = _userListBox.Items.Cast<User>().ToList();
+                    
+                        
                     a.Remove(a.First(x => x.Name == json["Name"].ToString()));
                     addMessage(json["Name"].ToString() + " has left the room.");
                     _userListBox.Items.Clear();
