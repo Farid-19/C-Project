@@ -6,11 +6,12 @@ using System.Collections.Specialized;
 using System.Dynamic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-
+using System.IO;
 namespace NetworkLibrary
 {
     [Serializable]
@@ -20,16 +21,27 @@ namespace NetworkLibrary
         public Dictionary<User, string> Messages { get; set; }
         public ObservableCollection<User> users { get; set; }
         private readonly ReaderWriterLock usersLock = new ReaderWriterLock();
+        private bool writeLog;
 
-        public Chatroom(string name)
+        public Chatroom(string name, bool writeMessagesToDisk = false)
         {
+            writeLog = writeMessagesToDisk;
             Name = name;
             Messages = new Dictionary<User, string>();
             users = new ObservableCollection<User>();
             users.CollectionChanged += OnUsersListChanged;
+
+                
         }
 
+        public void addMessage(User s, string message)
+        {
+            string mes = s.Name + ": " + message;
 
+            if (writeLog)
+                WriteLog(mes);
+            Messages.Add(s, message);
+        }
 
         public void AddUser(User u)
         {
@@ -65,6 +77,7 @@ namespace NetworkLibrary
         /// <param name="users">Collection of users to send the message to</param>
         private void BroadCast(string message, string user, IEnumerable<User> users)
         {
+            addMessage(users.First(x => x.Name == user), message);
             JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
             new JProperty("Message", message),
             new JProperty("User", user));
@@ -101,6 +114,19 @@ namespace NetworkLibrary
 
         }
 
+        public void WriteLog(string leMessage)
+        {
+            string logFilePath = this.Name + @".txt";
+
+            using (FileStream file = new FileStream(logFilePath,FileMode.Append,FileAccess.Write,FileShare.None)) {
+                StreamWriter writer = new StreamWriter(file);
+                DateTime n = DateTime.Now;
+                writer.Write("[" +  n.Day +":" + n.Month + ":" + n.Year + ":" + n.Second + ":" + n.Minute + "]" + leMessage);
+
+                file.Flush();
+                file.Close();
+            }
+        }
 
         /// <summary>
         ///  Notifies existing clients/users if a user leaves or joins this chatroom.
@@ -123,6 +149,8 @@ namespace NetworkLibrary
                                  if(existingUser == newUser)
                                     continue;
                                 json.Add(new JProperty("CMD", "userjoined"));
+                                if (writeLog)
+                                    WriteLog(newUser + " joined the room.");
                                 existingUser.send(json.ToString());
                             }
 
@@ -133,6 +161,8 @@ namespace NetworkLibrary
                                 JObject json = new JObject(new JProperty("Name", oldUser.Name));
                                 json.Add(new JProperty("CMD", "userleft"));
                                 existingUser.send(json.ToString());
+                                if (writeLog)
+                                    WriteLog(oldUser + " left the room.");
                             }
                             break;
                         default:

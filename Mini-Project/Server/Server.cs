@@ -21,7 +21,6 @@ namespace Server
 
         private ConcurrentDictionary<User, Chatroom> usersChatRoom;
         private ConcurrentDictionary<TcpClient, User> clientUsers;
-        private readonly Chatroom defaultChatroom;
 
         public Server()
         {
@@ -30,10 +29,10 @@ namespace Server
             
             usersChatRoom = new ConcurrentDictionary<NetworkLibrary.User, NetworkLibrary.Chatroom>();
             clientUsers = new ConcurrentDictionary<TcpClient, User>();
-            defaultChatroom = new Chatroom("The Commissariat");
+            Chatroom defaultChatroom = new Chatroom("The Commissariat");
             Chatroom c1 = new Chatroom("The White council");
             Chatroom c2 = new Chatroom("League of Nations");
-            Chatroom c3 = new Chatroom("Ministerie van koloniën");
+            Chatroom c3 = new Chatroom("Ministerie van koloniën", true);
             Chatroom c4 = new Chatroom("QueueAge");
             Chatroom c5 = new Chatroom("De Gemeentehuis");
             chatrooms.Add(defaultChatroom);
@@ -124,15 +123,6 @@ namespace Server
 
 
 
-        }
-
-        private void send(User u, string s)
-        {
-            TcpClient client;
-            //userConnections.TryGetValue(u, out client);
-           // if(client == null)
-             //   throw new InvalidOperationException("User not found in the userConnection dictionary.");
-            //send(client, s);
         }
 
         private void JoinRoom(JObject j, TcpClient r)
