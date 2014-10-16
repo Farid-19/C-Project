@@ -12,9 +12,11 @@ namespace Client.GUI
 {
     public partial class ChatRoomGUI : Form
     {
-        public ChatRoomGUI()
+        public ChatRoomGUI(String name)
         {
+            
             InitializeComponent();
+            _chatRoomLabel.Text = name;
         }
     }
 }

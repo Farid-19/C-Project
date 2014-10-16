@@ -23,7 +23,7 @@ namespace Client.GUI
         public ChooseRoomGUI(String username, Client c)
         {
             InitializeComponent();
-            _welcomeLabel.Text = "Welcome " + username + " !";
+            _welcomeLabel.Text = "Welcome " + username;
 
             if (_roomListBox.SelectedIndex == -1)
             {
@@ -31,7 +31,7 @@ namespace Client.GUI
             }
             client = c;
 
-            client.requestRooms();
+            client.requestInfo("chatrooms");
             client.OnReceivedJSON += UpdateJSON;
         }
 
@@ -73,7 +73,8 @@ namespace Client.GUI
             client.Send(data);
 
 
-            ChatRoomGUI chatGUI = new ChatRoomGUI();
+            ChatRoomGUI chatGUI = new ChatRoomGUI(_roomListBox.SelectedItem.ToString());
+            chatGUI.Text = _roomListBox.SelectedItem.ToString();
             chatGUI.Show();
 
         }

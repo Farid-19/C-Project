@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this._chatLogBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this._chatRoomLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this._textBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -46,15 +46,15 @@
             this._chatLogBox.Size = new System.Drawing.Size(525, 291);
             this._chatLogBox.TabIndex = 17;
             // 
-            // label1
+            // _chatRoomLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(116, 26);
-            this.label1.TabIndex = 19;
-            this.label1.Text = "Chatroom";
+            this._chatRoomLabel.AutoSize = true;
+            this._chatRoomLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._chatRoomLabel.Location = new System.Drawing.Point(12, 8);
+            this._chatRoomLabel.Name = "_chatRoomLabel";
+            this._chatRoomLabel.Size = new System.Drawing.Size(116, 26);
+            this._chatRoomLabel.TabIndex = 19;
+            this._chatRoomLabel.Text = "Chatroom";
             // 
             // label2
             // 
@@ -100,7 +100,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this._textBox);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this._chatRoomLabel);
             this.Controls.Add(this._chatLogBox);
             this.Name = "ChatRoomGUI";
             this.Text = "ChatRoomGUI";
@@ -112,7 +112,7 @@
         #endregion
 
         private System.Windows.Forms.TextBox _chatLogBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label _chatRoomLabel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox _textBox;
         private System.Windows.Forms.Button button1;

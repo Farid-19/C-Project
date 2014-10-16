@@ -31,8 +31,6 @@
             this._roomListBox = new System.Windows.Forms.ListBox();
             this._welcomeLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this._counterLabel = new System.Windows.Forms.Label();
             this._connectButton = new System.Windows.Forms.Button();
             this._disconnectButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -66,26 +64,6 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Choose a room!";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 235);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(155, 20);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Connected users: ";
-            // 
-            // _counterLabel
-            // 
-            this._counterLabel.AutoSize = true;
-            this._counterLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._counterLabel.Location = new System.Drawing.Point(173, 238);
-            this._counterLabel.Name = "_counterLabel";
-            this._counterLabel.Size = new System.Drawing.Size(58, 15);
-            this._counterLabel.TabIndex = 4;
-            this._counterLabel.Text = "Number";
-            // 
             // _connectButton
             // 
             this._connectButton.Location = new System.Drawing.Point(364, 295);
@@ -102,7 +80,7 @@
             this._disconnectButton.Name = "_disconnectButton";
             this._disconnectButton.Size = new System.Drawing.Size(115, 42);
             this._disconnectButton.TabIndex = 7;
-            this._disconnectButton.Text = "Disconnect";
+            this._disconnectButton.Text = "Quit";
             this._disconnectButton.UseVisualStyleBackColor = true;
             this._disconnectButton.Click += new System.EventHandler(this._disconnectButton_Click);
             // 
@@ -113,8 +91,6 @@
             this.ClientSize = new System.Drawing.Size(500, 351);
             this.Controls.Add(this._disconnectButton);
             this.Controls.Add(this._connectButton);
-            this.Controls.Add(this._counterLabel);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this._welcomeLabel);
             this.Controls.Add(this._roomListBox);
@@ -130,8 +106,6 @@
         private System.Windows.Forms.ListBox _roomListBox;
         private System.Windows.Forms.Label _welcomeLabel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label _counterLabel;
         private System.Windows.Forms.Button _connectButton;
         private System.Windows.Forms.Button _disconnectButton;
     }

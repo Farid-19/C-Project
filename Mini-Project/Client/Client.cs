@@ -31,32 +31,31 @@ namespace Client
             thread.Start();
         }
 
-        public void requestRooms()
+        public void requestInfo(String type) 
         {
-            JObject roomsPacket = new JObject(
+            switch (type)
+            {
+                case "chatrooms":
+                    JObject roomsPacket = new JObject(
                     new JProperty("CMD", "requestinfo"),
-                    new JProperty("Type", "chatrooms"));
-                
+                    new JProperty("Type", type));
+                    var json1 = roomsPacket.ToString();
+                    byte[] data1 = Packet.CreateByteData(json1);
+                    this.Send(data1);
+                    break;
 
-            var json = roomsPacket.ToString();
+                case "users":
+                    JObject usersPacket = new JObject(
+                    new JProperty("CMD", "requestinfo"),
+                    new JProperty("Type", type));
+                    var json2 = usersPacket.ToString();
+                    byte[] data2 = Packet.CreateByteData(json2);
+                    this.Send(data2);
+                    break;
+            }
 
-           
-
-            byte[] data = Packet.CreateByteData(json);
-            this.Send(data);
             
-        }
-
-        public void requestUsers()
-        {
-            JObject usersPacket = new JObject(
-                    new JProperty("CMD", "requestinfo"),
-                    new JProperty("Type", "users"));
-
-            var json = usersPacket.ToString();
-
-            byte[] data = Packet.CreateByteData(json);
-            this.Send(data);
+            
         }
 
         public void read()
