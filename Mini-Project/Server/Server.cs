@@ -145,8 +145,10 @@ namespace Server
                 return;
             }
 
-            usersChatRoom.AddOrUpdate(s, defaultChatroom, (z, c) => c);
-            defaultChatroom.AddUser(s);
+            Chatroom roomToAddTo = chatrooms.First(w => w.Name == j["Room"].ToString());
+            usersChatRoom.AddOrUpdate(s, roomToAddTo, (z, c) => c);
+            roomToAddTo.AddUser(s);
+            string t = ";";
         }
 
         private void LeaveRoom(JObject j, TcpClient r)
@@ -159,8 +161,13 @@ namespace Server
                 return;
             }
 
-            bool succes = usersChatRoom.TryRemove(clientUsers.GetOrAdd(j, (client, user) => user));
-            defaultChatroom.AddUser(s);
+            User removUser = null;
+            User userToRemove = clientUsers.GetOrAdd(r, removUser);
+            if (userToRemove == null)
+                return;
+
+            Chatroom removed;
+            bool succes = usersChatRoom.TryRemove(userToRemove, out removed);
         }
 
 	    private void HandleNewchatmessage(JObject json)

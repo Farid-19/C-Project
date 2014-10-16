@@ -63,8 +63,8 @@ namespace Client.GUI
         private void _connectButton_Click(object sender, EventArgs e)
         {
             JObject changeRoomPacket = new JObject(
-                new JProperty("CMD", "changeRoom"),
-                new JProperty("Room", _roomListBox.SelectedIndex.ToString()));
+                new JProperty("CMD", "joinRoom"),
+                new JProperty("Room", ((Chatroom)_roomListBox.SelectedItem).Name));
 
 
             var json = changeRoomPacket.ToString();
