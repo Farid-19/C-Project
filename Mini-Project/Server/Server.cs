@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Server
         private ConcurrentBag<User> users;
 
         private ConcurrentDictionary<User, Chatroom> usersChatRoom;
+        private ConcurrentDictionary<TcpClient, User> clientUsers;
         private readonly Chatroom defaultChatroom;
 
         public Server()
@@ -27,6 +29,7 @@ namespace Server
             users = new ConcurrentBag<NetworkLibrary.User>();
             
             usersChatRoom = new ConcurrentDictionary<NetworkLibrary.User, NetworkLibrary.Chatroom>();
+            clientUsers = new ConcurrentDictionary<TcpClient, User>();
             defaultChatroom = new Chatroom("The Commissariat");
             Chatroom c1 = new Chatroom("The White council");
             Chatroom c2 = new Chatroom("League of Nations");
@@ -39,7 +42,6 @@ namespace Server
             chatrooms.Add(c3);
             chatrooms.Add(c4);
             chatrooms.Add(c5);
-            AddNewUser(new User("Stalin", new TcpClient()));
 
         }
 
@@ -103,6 +105,13 @@ namespace Server
                         case "changeRoom":
                             HandleChangeRoom(json, client);
                             break;
+                        case "joinRoom":
+                            JoinRoom(json, client);
+                            break;
+
+                        case "LeaveRoom":
+                            LeaveRoom(json, client);
+                            break;
                     }
                 }
                 else // client (probably) disconnected.
@@ -123,6 +132,34 @@ namespace Server
             //send(client, s);
         }
 
+        private void JoinRoom(JObject j, TcpClient r)
+        {
+            string room = j["Room"].ToString();
+            User s = clientUsers.GetOrAdd(r , z => null);
+
+            if (s == null)
+            {
+                return;
+            }
+
+            usersChatRoom.AddOrUpdate(s, defaultChatroom, (z, c) => c);
+            defaultChatroom.AddUser(s);
+        }
+
+        private void LeaveRoom(JObject j, TcpClient r)
+        {
+            string room = j["Room"].ToString();
+            User s = clientUsers.GetOrAdd(r, z => null);
+
+            if (s == null)
+            {
+                return;
+            }
+
+            bool succes = usersChatRoom.TryRemove(clientUsers.GetOrAdd(j, (client, user) => user));
+            defaultChatroom.AddUser(s);
+        }
+
         private void send(TcpClient client, string s)
         {
             byte[] data = Packet.CreateByteData(s);
@@ -139,7 +176,7 @@ namespace Server
                 client = client
             };
 
-            AddNewUser(newUser);
+            AddNewUser(client, newUser);
         }
 
         private void HandleChangeRoom(JObject json, TcpClient client)
@@ -168,12 +205,14 @@ namespace Server
             }
         }
 
-        private void AddNewUser(User u)
+        private void AddNewUser(TcpClient t, User u)
         {
+            clientUsers.AddOrUpdate(t, u, (z, q) => q);
             users.Add(u);
-            usersChatRoom.AddOrUpdate(u, defaultChatroom, (z, c) => c);
-            defaultChatroom.AddUser(u);
+
         }
+
+        
 
 
        
