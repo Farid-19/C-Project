@@ -111,27 +111,35 @@ namespace NetworkLibrary
         {
             foreach (User existingUser in users.Where(x => x.isConnected))
             {
-                foreach (User newUser in argsChangedAction.NewItems)
+                 
+                
+                switch (argsChangedAction.Action)
                 {
-                    JObject json = new JObject(new JProperty("Name", newUser.Name));
-
-                    switch (argsChangedAction.Action)
-                    {
                         case NotifyCollectionChangedAction.Add:
-                            if(existingUser == newUser)
-                                continue;
-                            json.Add(new JProperty("CMD", "userjoined"));
-                            break;
+                          
+                            foreach (User newUser in argsChangedAction.NewItems)
+                            {
+                                JObject json = new JObject(new JProperty("Name", newUser.Name));
+                                 if(existingUser == newUser)
+                                    continue;
+                                json.Add(new JProperty("CMD", "userjoined"));
+                                existingUser.send(json.ToString());
+                            }
+
+                        break;
                         case NotifyCollectionChangedAction.Remove:
-                            json.Add(new JProperty("CMD", "userleft"));
+                            foreach (User oldUser in argsChangedAction.OldItems)
+                            {
+                                JObject json = new JObject(new JProperty("Name", oldUser.Name));
+                                json.Add(new JProperty("CMD", "userleft"));
+                                existingUser.send(json.ToString());
+                            }
                             break;
                         default:
-                            continue;
                             break;
-                    }
-
-                    existingUser.send(json.ToString());
                 }
+
+                
             }
         }
     }

@@ -168,6 +168,7 @@ namespace Server
 
             Chatroom removed;
             bool succes = usersChatRoom.TryRemove(userToRemove, out removed);
+            removed.RemoveUser(userToRemove);
         }
 
 	    private void HandleNewchatmessage(JObject json)
