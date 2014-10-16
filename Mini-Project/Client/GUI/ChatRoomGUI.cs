@@ -55,12 +55,41 @@ namespace Client.GUI
 
         private void button1_Click(object sender, EventArgs e)
         {
-            JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
+            if (_textBox.Text == "")
+            {
+                MessageBox.Show("Please enter your message!");
+            }
+            else
+            {
+                JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
                 new JProperty("Message", _textBox.Text),
                 new JProperty("User", user.Name));
-            addMessage(user.Name + ": " + _textBox.Text);
-            client.Send(Packet.CreateByteData(json.ToString()));
-            
+                addMessage(user.Name + ": " + _textBox.Text);
+                client.Send(Packet.CreateByteData(json.ToString()));
+                _textBox.Text = "";
+            }
+           
+        }
+
+        private void _textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char) 13)
+            {
+                if (_textBox.Text == "")
+                {
+                    MessageBox.Show("Please enter your message!");
+                }
+                else
+                {
+                    JObject json = new JObject(new JProperty("CMD", "newchatmessage"),
+                    new JProperty("Message", _textBox.Text),
+                    new JProperty("User", user.Name));
+                    addMessage(user.Name + ": " + _textBox.Text);
+                    client.Send(Packet.CreateByteData(json.ToString()));
+                    _textBox.Text = "";
+                }
+           
+            }
         }
 
         private void jsonReceived(JObject json)
@@ -92,5 +121,16 @@ namespace Client.GUI
                     break;
             }
         }
+
+        private void _leaveButton_Click(object sender, EventArgs e)
+        {
+            JObject json = new JObject(new JProperty("CMD", "leaveRoom"),
+                new JProperty("Room", room.Name));
+            client.Send(Packet.CreateByteData(json.ToString()));
+
+            this.Close();
+        }
+
+        
     }
 }

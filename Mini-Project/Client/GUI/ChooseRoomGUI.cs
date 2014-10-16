@@ -81,9 +81,11 @@ namespace Client.GUI
 
             room.AddUser(user);
 
+            
             ChatRoomGUI chatGUI = new ChatRoomGUI(client, room, user);
+            
             chatGUI.Text = room.Name;
-            chatGUI.Show();
+            chatGUI.ShowDialog();
 
         }
 
@@ -100,6 +102,16 @@ namespace Client.GUI
                 _roomListBox.BeginInvoke((Action)(() => _roomListBox.Items.Add(chatroom)));
                 
             }
+        }
+
+        private void _updateButton_Click(object sender, EventArgs e)
+        {
+            if (_roomListBox.Items.Count != 0)
+            {
+                _roomListBox.Items.Clear();
+            }
+            client.requestInfo("chatrooms");
+            client.OnReceivedJSON += UpdateJSON;
         }
     }
 }

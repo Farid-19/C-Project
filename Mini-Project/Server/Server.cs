@@ -111,7 +111,7 @@ namespace Server
                             JoinRoom(json, client);
                             break;
 
-                        case "LeaveRoom":
+                        case "leaveRoom":
                             LeaveRoom(json, client);
                             break;
                     }

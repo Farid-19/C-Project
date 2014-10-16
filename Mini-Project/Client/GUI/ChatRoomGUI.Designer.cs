@@ -34,6 +34,7 @@
             this._textBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this._userListBox = new System.Windows.Forms.ListBox();
+            this._leaveButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _chatLogBox
@@ -70,12 +71,13 @@
             // 
             this._textBox.Location = new System.Drawing.Point(12, 356);
             this._textBox.Name = "_textBox";
-            this._textBox.Size = new System.Drawing.Size(675, 20);
+            this._textBox.Size = new System.Drawing.Size(525, 20);
             this._textBox.TabIndex = 21;
+            this._textBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this._textBox_KeyPress);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(704, 343);
+            this.button1.Location = new System.Drawing.Point(557, 343);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(116, 44);
             this.button1.TabIndex = 22;
@@ -85,6 +87,7 @@
             // 
             // _userListBox
             // 
+            this._userListBox.Enabled = false;
             this._userListBox.FormattingEnabled = true;
             this._userListBox.Location = new System.Drawing.Point(630, 37);
             this._userListBox.Name = "_userListBox";
@@ -92,11 +95,22 @@
             this._userListBox.Size = new System.Drawing.Size(190, 290);
             this._userListBox.TabIndex = 23;
             // 
+            // _leaveButton
+            // 
+            this._leaveButton.Location = new System.Drawing.Point(704, 343);
+            this._leaveButton.Name = "_leaveButton";
+            this._leaveButton.Size = new System.Drawing.Size(116, 44);
+            this._leaveButton.TabIndex = 24;
+            this._leaveButton.Text = "Leave Room";
+            this._leaveButton.UseVisualStyleBackColor = true;
+            this._leaveButton.Click += new System.EventHandler(this._leaveButton_Click);
+            // 
             // ChatRoomGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(832, 401);
+            this.Controls.Add(this._leaveButton);
             this.Controls.Add(this._userListBox);
             this.Controls.Add(this.button1);
             this.Controls.Add(this._textBox);
@@ -118,5 +132,6 @@
         private System.Windows.Forms.TextBox _textBox;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ListBox _userListBox;
+        private System.Windows.Forms.Button _leaveButton;
     }
 }
