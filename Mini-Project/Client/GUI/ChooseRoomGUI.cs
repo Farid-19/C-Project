@@ -19,9 +19,10 @@ namespace Client.GUI
     public partial class ChooseRoomGUI : Form
     {
         Client client;
-
+        User user; 
         public ChooseRoomGUI(String username, Client c)
         {
+            
             InitializeComponent();
             _welcomeLabel.Text = "Welcome " + username;
 
@@ -30,6 +31,8 @@ namespace Client.GUI
                 _connectButton.Enabled = false;
             }
             client = c;
+
+            user = new User(username, null);
 
             client.requestInfo("chatrooms");
             client.OnReceivedJSON += UpdateJSON;
@@ -62,19 +65,24 @@ namespace Client.GUI
 
         private void _connectButton_Click(object sender, EventArgs e)
         {
+            Chatroom room = (Chatroom)_roomListBox.SelectedItem;
+
+
             JObject changeRoomPacket = new JObject(
                 new JProperty("CMD", "joinRoom"),
-                new JProperty("Room", ((Chatroom)_roomListBox.SelectedItem).Name));
+                new JProperty("Room", room.Name));
 
+            
 
             var json = changeRoomPacket.ToString();
 
             byte[] data = Packet.CreateByteData(json);
             client.Send(data);
 
+            room.AddUser(user);
 
-            ChatRoomGUI chatGUI = new ChatRoomGUI(_roomListBox.SelectedItem.ToString());
-            chatGUI.Text = _roomListBox.SelectedItem.ToString();
+            ChatRoomGUI chatGUI = new ChatRoomGUI(room);
+            chatGUI.Text = room.Name;
             chatGUI.Show();
 
         }

@@ -32,25 +32,27 @@ namespace Client.GUI
             }
             else
             {
-                client.connectToServer(_serverIPBox.Text);
-
-                JObject identityPacket = new JObject(
-                    new JProperty("CMD", "identity"),
-                    new JProperty("Name", _usernameBox.Text));
-
-
-                var json = identityPacket.ToString();
-
-                byte[] data = Packet.CreateByteData(json);
-                client.Send(data);
-                
-                
-
+                login();
                 this.Hide();
 
                 ChooseRoomGUI chooseGUI = new ChooseRoomGUI(_usernameBox.Text, client);
                 chooseGUI.Show();
             }
+        }
+
+        public void login()
+        {
+            client.connectToServer(_serverIPBox.Text);
+
+            JObject identityPacket = new JObject(
+                new JProperty("CMD", "identity"),
+                new JProperty("Name", _usernameBox.Text));
+
+
+            var json = identityPacket.ToString();
+
+            byte[] data = Packet.CreateByteData(json);
+            client.Send(data);
         }
     }
 }
