@@ -102,6 +102,9 @@ namespace Server
                         case "requestinfo":
                             HandleFreedomOfInformationRequest(json, client);
                             break;
+                        case "newchatmessage":
+                            HandleNewchatmessage(json);
+                            break;
                         case "changeRoom":
                             HandleChangeRoom(json, client);
                             break;
@@ -160,6 +163,24 @@ namespace Server
             defaultChatroom.AddUser(s);
         }
 
+	    private void HandleNewchatmessage(JObject json)
+        {
+            string message = json["Message"].ToString();
+            User user = users.First(x => x.Name == json["User"].ToString());
+            Chatroom room;
+            usersChatRoom.TryGetValue(user, out room);
+            if (room != null) room.sendUserMessage(message, user);
+            //room.sendUserMessage(message, user);
+        }
+
+        private void broadcast(string message, string user)
+        {
+            foreach(Chatroom room in chatrooms)
+                room.BroadCast(message, user);
+        }
+
+
+
         private void send(TcpClient client, string s)
         {
             byte[] data = Packet.CreateByteData(s);
@@ -186,30 +207,36 @@ namespace Server
 
         private void HandleFreedomOfInformationRequest(JObject j, TcpClient c)
         {
+            JObject json;
             switch (j["Type"].ToString().ToLower())
             {
                 case "chatrooms":
                     JArray allRooms = JArray.FromObject(chatrooms.ToList());
-                    JObject json = new JObject(new JProperty("CMD", "requestinforesponse"),
+                    json = new JObject(new JProperty("CMD", "requestinforesponse"),
                         new JProperty("Type", "chatrooms"),
                         new JProperty("Data", allRooms));
                     send(c, json.ToString());
                         break;
                 case "users":
                      JArray allUsers = JArray.FromObject(users.ToList());
-                     JObject json2 = new JObject(new JProperty("CMD", "requestinforesponse"),
+                     json  = new JObject(new JProperty("CMD", "requestinforesponse"),
                          new JProperty("Type", "users"),
                          new JProperty("Data", allUsers));
-                     send(c, json2.ToString());
                      break;
+
+                default:
+                    return;
             }
+            send(c, json.ToString());
+
         }
 
         private void AddNewUser(TcpClient t, User u)
         {
             clientUsers.AddOrUpdate(t, u, (z, q) => q);
             users.Add(u);
-
+            //usersChatRoom.AddOrUpdate(u, defaultChatroom, (z, c) => c);
+            //defaultChatroom.AddUser(u);
         }
 
         
