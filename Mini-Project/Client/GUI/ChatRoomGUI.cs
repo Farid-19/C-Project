@@ -102,10 +102,12 @@ namespace Client.GUI
 
             JToken username;
 
-            if (!json.TryGetValue("Name", out username))
-                return;
-            if (!_userListBox.Items.Cast<User>().ToList().Exists(x => x.Name == username.ToString()))
-                return;
+            //if (!json.TryGetValue("User", out username))
+            //    return;
+
+            //Als de begruiker niet bestaat
+            //if (!_userListBox.Items.Cast<User>().ToList().Exists(x => x.Name == username.ToString()))
+            //    return;
 
             switch (json["CMD"].ToString().ToLower())
             {

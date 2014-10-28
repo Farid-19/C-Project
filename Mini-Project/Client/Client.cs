@@ -91,9 +91,9 @@ namespace Client
             }
         }
 
-        public void Send(byte[] data)
+        public async void Send(byte[] data)
         {
-            client.GetStream().WriteAsync(data, 0, data.Length);            
+            await client.GetStream().WriteAsync(data, 0, data.Length);            
         }
     }
 }

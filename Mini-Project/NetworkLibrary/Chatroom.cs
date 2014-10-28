@@ -87,6 +87,7 @@ namespace NetworkLibrary
             usersLock.AcquireReaderLock(-1);
             foreach (User u in users)
             {
+                Console.WriteLine("Sending a message to {0} in chatroom {1}", u, Name);
                 u.send(json.ToString());
             }
             usersLock.ReleaseReaderLock();

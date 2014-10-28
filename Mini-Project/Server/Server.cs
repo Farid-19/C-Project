@@ -143,6 +143,7 @@ namespace Server
 
         private void LeaveRoom(JObject j, TcpClient r)
         {
+            
             string room = j["Room"].ToString();
             User s = clientUsers.GetOrAdd(r, z => null);
 
@@ -159,6 +160,7 @@ namespace Server
             Chatroom removed;
             bool succes = usersChatRoom.TryRemove(userToRemove, out removed);
             removed.RemoveUser(userToRemove);
+            Console.WriteLine(String.Format("{0} has left {1}", userToRemove.Name, removed.Name));
         }
 
 	    private void HandleNewchatmessage(JObject json)
@@ -167,6 +169,7 @@ namespace Server
             User user = users.First(x => x.Name == json["User"].ToString());
             Chatroom room;
             usersChatRoom.TryGetValue(user, out room);
+	        Console.WriteLine(String.Format("Got a new chatmessage in room {1}: {0}", message, room.Name));
             if (room != null) room.sendUserMessage(message, user);
         }
 
